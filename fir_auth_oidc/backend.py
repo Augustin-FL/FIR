@@ -18,6 +18,10 @@ class ClaimMappingOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         if is_api:
             claims_mapping = self.get_settings("AUTH_OICD_API_CLAIM_MAP")
 
+        if callable(self.get_settings("AUTH_OIDC_CLAIM_MAP_FUNCTION", False)):
+            # users permissions are handled through a custom function
+            return True
+
         role_map = self.get_settings("AUTH_OIDC_ROLE_MAP")
         group_map = self.get_settings("AUTH_OIDC_GROUP_MAP")
         flag_map = self.get_settings("AUTH_OIDC_FLAG_MAP")
@@ -150,6 +154,10 @@ class ClaimMappingOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
         roles = self.jsonpath_get(claims_mapping, claims, "roles", multi=True)
         user = self.set_roles(user, roles)
+
+        if callable(self.get_settings("AUTH_OIDC_CLAIM_MAP_FUNCTION", False)):
+            user = self.get_settings("AUTH_OIDC_CLAIM_MAP_FUNCTION")(user, claims)
+            user.save()
 
         incidents.models.Profile.objects.get_or_create(user=user)
 
