@@ -1,8 +1,10 @@
+import importlib
 from django.apps import apps
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from collections import OrderedDict
+from copy import deepcopy
 
 from incidents.models import (
     Incident,
@@ -18,56 +20,7 @@ from incidents.models import (
     STATUS_CHOICES,
     CONFIDENTIALITY_LEVEL,
 )
-
-if apps.is_installed("fir_todos"):
-    from fir_todos.models import TodoItem
-
-    class TodoSerializer(serializers.ModelSerializer):
-        """
-        Serializer for Todo items
-        """
-
-        category = serializers.SlugRelatedField(
-            many=False, read_only=True, slug_field="name"
-        )
-        business_line = serializers.SlugRelatedField(
-            slug_field="name",
-            queryset=BusinessLine.objects.all(),
-            required=False,
-            default=None,
-        )
-
-        class Meta:
-            model = TodoItem
-            fields = [
-                "id",
-                "description",
-                "incident",
-                "category",
-                "business_line",
-                "done",
-                "done_time",
-            ]
-            read_only_fields = ["id"]
-
-
-if apps.is_installed("fir_nuggets"):
-    from fir_nuggets.models import Nugget
-
-    class NuggetSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Nugget
-            fields = (
-                "id",
-                "raw_data",
-                "source",
-                "start_timestamp",
-                "end_timestamp",
-                "interpretation",
-                "incident",
-                "found_by",
-            )
-            read_only_fields = ("id", "found_by")
+from fir.config.base import INSTALLED_APPS
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -246,11 +199,7 @@ class IncidentSerializer(serializers.ModelSerializer):
     )
     last_comment_date = serializers.DateTimeField(read_only=True)
 
-    if apps.is_installed("fir_todos"):
-        todoitem_set = TodoSerializer(many=True, read_only=True)
-
-    if apps.is_installed("fir_nuggets"):
-        nugget_set = NuggetSerializer(many=True, read_only=True)
+    _additional_fields = {}
 
     class Meta:
         model = Incident
@@ -258,15 +207,33 @@ class IncidentSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "opened_by")
 
     def __init__(self, *args, **kwargs):
-        if "context" in kwargs and kwargs["context"]["view"].action != "retrieve":
+        is_not_retrieve = kwargs["context"]["view"].action != "retrieve"
+        if is_not_retrieve:
             del self.fields["artifacts"]
             del self.fields["comments_set"]
             del self.fields["file_set"]
-            if "nugget_set" in self.fields:
-                del self.fields["nugget_set"]
-            if "todoitem_set" in self.fields:
-                del self.fields["todoitem_set"]
-        super().__init__(*args, **kwargs)
+
+        # Load Additional incident fields defined in plugins via a hook
+        for app in INSTALLED_APPS:
+            if app.startswith("fir_"):
+                try:
+                    h = importlib.import_module(f"{app}.hooks")
+                except ImportError:
+                    continue
+
+                for field in h.hooks.get("incident_fields", []):
+                    if field[2] is not None and (
+                        not field[0].endswith("_set") or is_not_retrieve
+                    ):
+                        self._declared_fields.update({field[0]: field[2]})
+                        self._additional_fields.update({field[0]: field[2]})
+                    else:
+                        try:
+                            del self.fields[field[0]]
+                        except KeyError:
+                            pass
+
+        return super().__init__(*args, **kwargs)
 
     def validate_owner(self, owner):
         try:
@@ -275,6 +242,39 @@ class IncidentSerializer(serializers.ModelSerializer):
         except ObjectDoesNotExist:
             raise serializers.ValidationError(f"User with name {owner} does not exist")
         return owner
+
+    def create(self, validated_data):
+        field_to_create = {}
+        for f in self._additional_fields:
+            field_data = validated_data.pop(f, {})
+            if f.endswith("_set"):
+                # OneToMany creation is not supported
+                continue
+            field_serializer = deepcopy(self._additional_fields[f])
+            field_to_create[field_serializer] = field_data
+
+        instance = super().create(validated_data)
+
+        for field_serializer in field_to_create:
+            data = field_to_create[field_serializer]
+            setattr(field_serializer, "initial_data", data)
+            if field_serializer.is_valid(raise_exception=True):
+                field_serializer.save(incident=instance)
+        return instance
+
+    def update(self, instance, validated_data):
+        for f in self._additional_fields:
+            field_data = validated_data.pop(f, {})
+            if f.endswith("_set"):
+                # OneToMany update is not supported
+                continue
+            field_serializer = deepcopy(self._additional_fields[f])
+            setattr(field_serializer, "initial_data", field_data)
+            if field_serializer.is_valid(raise_exception=True):
+                field_serializer.instance = getattr(instance, f, None)
+                field_serializer.save(incident=instance)
+
+        return super().update(instance, validated_data)
 
 
 class ValidAttributeSerializer(serializers.ModelSerializer):
