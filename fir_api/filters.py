@@ -212,10 +212,9 @@ class IncidentFilter(FilterSet):
 
                 fields = h.hooks.get("incident_fields", [])
                 if isinstance(fields, list):
-                    for field in fields:
-                        if isinstance(field[3], dict):
-                            for k, v in field[3].items():
-                                self.filters.update({k: v})
+                    if len(fields) >= 3 and isinstance(fields[3], dict):
+                        for k, v in fields[3].items():
+                            self.filters.update({k: v})
                 fields = h.hooks.get("search_filter", [])
                 if isinstance(fields, list):
                     self.search_filters.extend(fields)
