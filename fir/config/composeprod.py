@@ -81,7 +81,7 @@ LOGGING = {
     "formatters": {
         "verbose": {"format": "%(asctime)s: %(message)s"},
         "verbose_celery": {
-            "format": "%(asctime)s: [%(levelname)s/%(processName)s] %(message)s"
+            "format": "%(asctime)s: [%(levelname)s/%(processName)s] %(name)s - %(levelname)s %(message)s"
         },
     },
     "handlers": {
@@ -100,7 +100,7 @@ LOGGING = {
         "celery": {
             # Logs of the celery worker
             "handlers": ["console_celery"],
-            "level": "INFO",
+            "level": "DEBUG",
             "propagate": True,
         },
         "django.request": {
