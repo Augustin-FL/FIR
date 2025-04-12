@@ -100,7 +100,7 @@ LOGGING = {
         "celery": {
             # Logs of the celery worker
             "handlers": ["console_celery"],
-            "level": "DEBUG",
+            "level": "INFO",
             "propagate": True,
         },
         "django.request": {
