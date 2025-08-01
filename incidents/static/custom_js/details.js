@@ -259,10 +259,7 @@ async function display_comment_form(id) {
     editors["id_comment"].value(response["comment"]);
     document.getElementById("id_action").value = response["action"];
 
-    var date = new Date(response["date"]);
-    date = new Date(date.getTime() - new Date().getTimezoneOffset() * 60 * 1000)
-      .toISOString()
-      .slice(0, 16);
+    var date = new Date(response["date"]).toISOString().slice(0, 16);
     document.getElementById("id_date").value = date;
     comment_form.dataset.id = parseInt(id);
   } else {
