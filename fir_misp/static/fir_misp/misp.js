@@ -19,12 +19,9 @@ function query_misp() {
 
 function misp_query_artifacts(observables, incident_id) {
   // extra options are set in ajaxSetup
+  url_params = new URLSearchParams(observables.map(v => ["observable", v]));
   $.ajax({
-    url: "/misp/query_misp_artifacts",
-    type: 'POST',
-    headers: {'X-CSRFToken': getCookie('csrftoken')},
-    contentType: "application/json",
-    data: JSON.stringify({"observables": observables, "incident_id":incident_id}),
+    url: `/api/misp?${url_params}&incident_id=${incident_id}`,
     success: function(data) {
       $("#tab_misp").empty();
       render_results(data);
@@ -121,10 +118,11 @@ function render_results(data) {
 function misp_post_observables(observables, misp_events, row) {
 
   $('#waitingMessage').show();
+  const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
   
   // extra options are set in ajaxSetup
   $.ajax({
-    url: "/misp/send_misp_artifacts",
+    url: "/api/misp",
     type: 'POST',
     headers: {'X-CSRFToken': getCookie('csrftoken')},
     contentType: "application/json",
