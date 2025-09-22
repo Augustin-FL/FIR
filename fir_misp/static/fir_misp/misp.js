@@ -124,7 +124,7 @@ function misp_post_observables(observables, misp_events, row) {
   $.ajax({
     url: "/api/misp",
     type: 'POST',
-    headers: {'X-CSRFToken': getCookie('csrftoken')},
+    headers: {'X-CSRFToken': $("[name=csrfmiddlewaretoken]").val()},
     contentType: "application/json",
     data: JSON.stringify({"observables": observables, "misp_events": misp_events, "fid": $("#fid").data("fid")}),
     success: function(data) {
