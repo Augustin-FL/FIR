@@ -8,10 +8,9 @@ $(function () {
 
 function query_misp() {
   artifacts = [];
-  inputs = $("input[name='artifacts_misp']").serializeArray();
-  for (var i in inputs) {
-    artifacts.push(inputs[i]['value']);
-  }
+  $("#artifacts .artifacts-table a").each(function() {
+	artifacts.push($(this).text());
+  });
   input_int = $("input[name='inc_id_misp']").serializeArray();
   inc_id = input_int[0]["value"]
   misp_query_artifacts(artifacts, inc_id);
@@ -46,7 +45,7 @@ function render_results(data) {
   $("#tab_misp").html(observables_template(data));
   $("#misp-tab .misp-count").html(tab_data_template(data))
 
-  $('.tagsinput').tagsInput();
+  $("#tab_misp .tagsinput").tagsInput();
 
   // check by default the most recent misp event (last one in the list)
   $(".misp_event input[type=checkbox]").last().prop("checked", true)
@@ -102,13 +101,13 @@ function render_results(data) {
   // toggle buttons
   $("#toggle-send").click(function(event) {
     event.preventDefault();
-    $("div.send").toggle();
-    $("div.read").toggle();
+    $("#tab_misp div.send").toggle();
+    $("#tab_misp div.read").toggle();
     $(this).text($(this).text() == "Cancel" ? "Send to misp..." : "Cancel");
   });
 
   // "Select all" checkbox
-  $("input.check-all").click(function(event) {
+  $("#tab_misp input.check-all").click(function(event) {
     state = this.checked;
     targetClass = $(this).data('target');
     $("."+targetClass+" input[type=checkbox]").prop("checked", state);
