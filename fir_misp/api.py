@@ -87,9 +87,6 @@ class MISPViewSet(
         except PyMISPError as err:
             logging.error(f"Got PyMISPError into get_misp_related_events: {err}")
             return []
-        # except Exception as err:
-        #    logging.error(f"Got error into get_misp_related_events: {err}")
-        #    return []
 
     def list(self, request, *args, **kwargs):
         self.filter_queryset(self.get_queryset())
