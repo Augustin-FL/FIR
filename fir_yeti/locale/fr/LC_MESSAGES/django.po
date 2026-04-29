@@ -46,58 +46,58 @@ msgstr "Impossible de récupérer le contenu de Yeti"
 msgid "Invalid request"
 msgstr "Demande invalide"
 
-#: templates/fir_threatintel/plugins/details_tab.html:5
+#: templates/fir_yeti/plugins/details_tab.html:5
 msgid "Threat Intel"
 msgstr ""
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:5
+#: templates/fir_yeti/plugins/details_tab_content.html:5
 msgid ""
 "No intelligence available for this incident. Please check your configuration "
 "settings."
 msgstr "Aucun renseignement disponible pour cet incident. Veuillez vérifier "
 "vos paramètres de configuration"
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:9
+#: templates/fir_yeti/plugins/details_tab_content.html:9
 msgid "Known: "
 msgstr "Connus : "
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:14
+#: templates/fir_yeti/plugins/details_tab_content.html:14
 msgid "Observables"
 msgstr ""
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:21
-#: templates/fir_threatintel/plugins/details_tab_content.html:61
+#: templates/fir_yeti/plugins/details_tab_content.html:21
+#: templates/fir_yeti/plugins/details_tab_content.html:61
 msgid "Observable"
 msgstr ""
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:22
-#: templates/fir_threatintel/plugins/details_tab_content.html:62
+#: templates/fir_yeti/plugins/details_tab_content.html:22
+#: templates/fir_yeti/plugins/details_tab_content.html:62
 msgid "Tags"
 msgstr ""
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:23
-#: templates/fir_threatintel/plugins/details_tab_content.html:63
+#: templates/fir_yeti/plugins/details_tab_content.html:23
+#: templates/fir_yeti/plugins/details_tab_content.html:63
 msgid "YETI Context"
 msgstr "Contexte YETI"
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:39
-#: templates/fir_threatintel/plugins/details_tab_content.html:88
+#: templates/fir_yeti/plugins/details_tab_content.html:39
+#: templates/fir_yeti/plugins/details_tab_content.html:88
 msgid "Unknown observables"
 msgstr "Observables inconnus"
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:54
+#: templates/fir_yeti/plugins/details_tab_content.html:54
 msgid "Send to Yeti..."
 msgstr "Envoyer à Yeti..."
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:111
+#: templates/fir_yeti/plugins/details_tab_content.html:111
 msgid "Select all / tags for all observables"
 msgstr "Tout séléctionner / Tags pour tout les observables"
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:117
+#: templates/fir_yeti/plugins/details_tab_content.html:117
 msgid "Send it!"
 msgstr "Envoyer !"
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:118
+#: templates/fir_yeti/plugins/details_tab_content.html:118
 #, fuzzy
 msgid ""
 "\n"
@@ -110,23 +110,23 @@ msgstr ""
 "contexte suivant : \n"
 "    "
 
-#: templates/fir_threatintel/plugins/details_tab_content.html:122
+#: templates/fir_yeti/plugins/details_tab_content.html:122
 msgid "Cancel"
 msgstr "Annuler"
 
-#: templates/fir_threatintel/plugins/user_profile.html:6
+#: templates/fir_yeti/plugins/user_profile.html:6
 msgid "Yeti API configuration"
 msgstr "Configuration de l'API Yeti"
 
-#: templates/fir_threatintel/plugins/user_profile.html:8
+#: templates/fir_yeti/plugins/user_profile.html:8
 msgid "You need an API key for the FIR ThreatIntel plugin to work."
 msgstr ""
 "Vous avez besoin d’une clé API pour que le plugin FIR ThreatIntel fonctionne."
 
-#: templates/fir_threatintel/plugins/user_profile.html:11
+#: templates/fir_yeti/plugins/user_profile.html:11
 msgid "Yeti API key"
 msgstr "Clé API"
 
-#: templates/fir_threatintel/plugins/user_profile.html:17
+#: templates/fir_yeti/plugins/user_profile.html:17
 msgid "Save"
 msgstr "Sauvegarder"

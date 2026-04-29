@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 
 from incidents.views import is_incident_handler
 
-from fir_threatintel.models import YetiProfile
+from fir_yeti.models import YetiProfile
 
 
 @login_required

@@ -9,7 +9,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from django_filters.rest_framework import CharFilter, FilterSet, DjangoFilterBackend
 
-from fir_threatintel.models import YetiProfile
+from fir_yeti.models import YetiProfile
 from fir_api.permissions import CanViewIncident, CanWriteIncident
 from fir_api.renderers import FilterButtonBrowsableAPIRenderer
 from fir_api.filter_backends import DummyFilterBackend

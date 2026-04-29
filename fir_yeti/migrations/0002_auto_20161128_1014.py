@@ -7,7 +7,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("fir_threatintel", "0001_initial"),
+        ("fir_yeti", "0001_initial"),
     ]
 
     operations = [
