@@ -7,10 +7,10 @@
 <li class="nav-item dropdown" id="stats-nav">
   <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">{% trans "Stats" %}</a>
   <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="{% url "stats:yearly" %}">{% trans "Yearly" %}</a></li>
-    <li><a class="dropdown-item" href="{% url "stats:quarterly" %}">{% trans "Quarterly" %}</a></li>
-    <li><a class="dropdown-item" href="{% url "stats:compare" %}">{% trans "Compare with previous year" %}</a></li>
-    <li><a class="dropdown-item" href="{% url "stats:major" %}">{% trans "Major incidents" %}</a></li>
+    <li><a class="dropdown-item" href="{% url "stats:yearly" %}?date={% now "Y-m-d" %}">{% trans "Yearly" %}</a></li>
+    <li><a class="dropdown-item" href="{% url "stats:quarterly" %}?date={% now "Y-m-d" %}">{% trans "Quarterly" %}</a></li>
+    <li><a class="dropdown-item" href="{% url "stats:compare" %}?date={% now "Y-m-d" %}">{% trans "Compare with previous year" %}</a></li>
+    <li><a class="dropdown-item" href="{% url "stats:major" %}?date={% now "Y-m-d" %}">{% trans "Major incidents" %}</a></li>
     <li><a class="dropdown-item" href="{% url "stats:sandbox" %}">{% trans "Sandbox" %}</a></li>
     <li><a class="dropdown-item" href="{% url "stats:attributes" %}">{% trans "Attributes" %}</a></li>
     {% plugin_point "stats_element" %}
