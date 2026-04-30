@@ -1,3 +1,4 @@
+import logging
 import requests
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -164,13 +165,23 @@ class YetiViewSet(
                 )
                 ret.raise_for_status()
         except requests.exceptions.RequestException as e:
+            logging.getLogger("FIR").error("Error while querying Yeti", exc_info=True)
             return Response(
-                {"error": _("Unable to retrieve content from Yeti"), "detail": str(e)},
+                {
+                    "error": _("Unable to retrieve content from Yeti"),
+                    "detail": "Please check server logs for details",
+                },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         except (KeyError, ValueError) as e:
+            logging.getLogger("FIR").error(
+                "Error while parsing GET data", exc_info=True
+            )
             return Response(
-                {"error": _("Invalid request"), "detail": str(e)},
+                {
+                    "error": _("Invalid request"),
+                    "detail": "Please check server logs for details",
+                },
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
