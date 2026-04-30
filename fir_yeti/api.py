@@ -101,8 +101,12 @@ class YetiViewSet(
                 if all([a["value"] != obs for a in results["known"]]):
                     results["unknown"].append(obs)
         except (requests.exceptions.RequestException, ValueError) as e:
+            logging.getLogger("FIR").error("Error while querying Yeti", exc_info=True)
             return Response(
-                {"error": _("Unable to retrieve content from Yeti"), "detail": str(e)},
+                {
+                    "error": _("Unable to retrieve content from Yeti"),
+                    "detail": "Please check server logs for details",
+                },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         return Response(results)
