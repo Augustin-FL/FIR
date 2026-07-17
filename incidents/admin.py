@@ -56,6 +56,25 @@ class IncidentStatusAdmin(admin.ModelAdmin):
     form = IncidentStatusAdminForm
 
 
+class LogAdmin(admin.ModelAdmin):
+    list_display = (
+        "__str__",
+        "incident",
+        "comment",
+        "who",
+        "what",
+        "when",
+    )
+    search_fields = (
+        "incident__id",
+        "incident__subject",
+        "comment__id",
+        "who__username",
+        "when",
+        "what",
+    )
+
+
 admin.site.register(Incident, IncidentAdmin)
 admin.site.register(BusinessLine, BusinessLineAdmin)
 admin.site.register(BaleCategory)
@@ -64,7 +83,7 @@ admin.site.register(LabelGroup)
 admin.site.register(Label)
 admin.site.register(IncidentCategory)
 admin.site.register(IncidentStatus, IncidentStatusAdmin)
-admin.site.register(Log)
+admin.site.register(Log, LogAdmin)
 admin.site.register(Profile)
 admin.site.register(IncidentTemplate)
 admin.site.register(Attribute)
