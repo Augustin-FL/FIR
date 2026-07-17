@@ -79,14 +79,14 @@ class Log(models.Model):
     inst_type = None
 
     def __str__(self):
-        if self.inst_type == Incident:
+        if self.inst_type == Incident or self.incident is not None:
             incident_id = self.incident.id
             if getattr(settings, "INCIDENT_SHOW_ID", False):
                 incident_id = getattr(settings, "INCIDENT_ID_PREFIX", "") + str(
                     self.incident.id
                 )
             return "[%s] %s: %s (%s)" % (self.when, self.what, incident_id, self.who)
-        elif self.inst_type == Comments:
+        elif self.inst_type == Comments or self.comment is not None:
             incident_id = self.comment.incident.id
             if getattr(settings, "INCIDENT_SHOW_ID", False):
                 incident_id = getattr(settings, "INCIDENT_ID_PREFIX", "") + str(
