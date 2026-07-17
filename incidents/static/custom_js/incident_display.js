@@ -335,13 +335,13 @@ async function refresh_display(div) {
     let ordering =
       new URL(window.location.href, window.location.origin).searchParams.get(
         "ordering",
-      ) || "";
+      ) || new URL(div.dataset.url, window.location.origin).searchParams.get("ordering") || "";
     let order = "up";
     if (ordering.charAt(0) === "-") {
       order = "down";
       ordering = ordering.substring(1);
     }
-    for (const elem of div.querySelectorAll("thead a[data-sort]")) {
+    for (const elem of div.querySelectorAll("th a[data-sort]")) {
       if (elem.dataset.sort === ordering) {
         elem.innerHTML += ` <span class="bi bi-chevron-${order}"></span>`;
       }
