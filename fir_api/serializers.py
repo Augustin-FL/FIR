@@ -295,10 +295,18 @@ class IncidentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         field_to_create = {}
         for f in self._additional_fields:
-            field_data = validated_data.pop(f, {})
             if f.endswith("_set"):
                 # OneToMany creation is not supported
                 continue
+
+            field = self.fields.get(f)
+            is_required = bool(field and field.required and not field.read_only)
+            if f not in validated_data:
+                if is_required and not self.partial:
+                    raise serializers.ValidationError({f: "This field is required."})
+                continue
+
+            field_data = validated_data.pop(f)
             field_serializer = deepcopy(self._additional_fields[f])
             field_to_create[field_serializer] = field_data
 
@@ -313,10 +321,18 @@ class IncidentSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         for f in self._additional_fields:
-            field_data = validated_data.pop(f, {})
             if f.endswith("_set"):
                 # OneToMany update is not supported
                 continue
+
+            field = self.fields.get(f)
+            is_required = bool(field and field.required and not field.read_only)
+            if f not in validated_data:
+                if is_required and not self.partial:
+                    raise serializers.ValidationError({f: "This field is required."})
+                continue
+
+            field_data = validated_data.pop(f)
             field_serializer = deepcopy(self._additional_fields[f])
             setattr(field_serializer, "initial_data", field_data)
             if field_serializer.is_valid(raise_exception=True):
