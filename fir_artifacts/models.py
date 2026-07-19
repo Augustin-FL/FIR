@@ -40,7 +40,7 @@ class Artifact(models.Model):
     def __str__(self):
         display = self.value
         if self.incidents.count() > 1:
-            display += " (%s)" % self.incident.count()
+            display += f" ({self.incidents.count()})"
         return display
 
 
