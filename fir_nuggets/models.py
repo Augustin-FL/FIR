@@ -27,8 +27,8 @@ class Nugget(models.Model):
 
 class NuggetForm(forms.ModelForm):
     date = DateTimeLocalField()
-    start_timestamp = DateTimeLocalField()
-    end_timestamp = DateTimeLocalField()
+    start_timestamp = DateTimeLocalField(required=False)
+    end_timestamp = DateTimeLocalField(required=False)
 
     class Meta:
         model = Nugget
