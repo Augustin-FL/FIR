@@ -54,6 +54,29 @@ function ajax_action(elt, callback) {
 	});
 }
 
+function get_local_datetime_value() {
+	var date = new Date();
+	return new Date(date.getTime() - new Date().getTimezoneOffset() * 60 * 1000)
+		.toISOString()
+		.slice(0, 16);
+}
+
+function set_default_nugget_dates() {
+	var localDate = get_local_datetime_value();
+	var nuggetForm = document.getElementById("nugget_form");
+	var dateField = nuggetForm.querySelector("#id_date");
+
+	if (dateField && !dateField.value) {
+		dateField.value = localDate;
+	}
+	var startTimestampField = nuggetForm.querySelector("#id_start_timestamp");
+
+	if (startTimestampField && !startTimestampField.value) {
+		startTimestampField.value = localDate;
+	}
+}
+
+
 function delete_nugget (data) {
 	$("#nugget_"+data).remove();
 	$("#raw"+data).remove();
@@ -69,6 +92,7 @@ function delete_nugget (data) {
 function edit_nugget(data) {
 	$("#nugget_modals").empty();
 	$("#nugget_modals").html(data);
+	set_default_nugget_dates();
 	$("#addNugget").modal('show');
 	$("#id_source").focus();
 }

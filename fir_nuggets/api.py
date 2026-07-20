@@ -45,6 +45,7 @@ class NuggetSerializer(serializers.ModelSerializer):
         model = Nugget
         fields = (
             "id",
+            "date",
             "raw_data",
             "source",
             "start_timestamp",
@@ -67,6 +68,7 @@ class NuggetViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     ordering_fields = [
         "id",
+        "date",
         "source",
         "start_timestamp",
         "end_timestamp",
