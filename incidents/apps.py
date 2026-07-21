@@ -8,9 +8,10 @@ class IncidentsConfig(AppConfig):
         from fir_plugins.links import registry
         from django.conf import settings
 
-        registry.register_reverse_link(
-            settings.INCIDENT_ID_PREFIX + r"(\d+)",
-            "incidents:details",
-            model="incidents.Incident",
-            reverse=settings.INCIDENT_ID_PREFIX + "{}",
-        )
+        if settings.INCIDENT_ID_PREFIX:
+            registry.register_reverse_link(
+                settings.INCIDENT_ID_PREFIX + r"(\d+)",
+                "incidents:details",
+                model="incidents.Incident",
+                reverse=settings.INCIDENT_ID_PREFIX + "{}",
+            )
