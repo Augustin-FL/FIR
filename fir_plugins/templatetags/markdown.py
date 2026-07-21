@@ -38,7 +38,7 @@ def rich_edit(context, field):
 def render_markdown(data):
     extras = ["tables", "code-friendly", "fenced-code-blocks"]
     if registry.link_patterns():
-        extras.append("tables")
+        extras.append("link-patterns")
 
     html = markdown2.markdown(
         data,
