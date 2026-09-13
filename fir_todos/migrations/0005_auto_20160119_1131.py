@@ -7,18 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fir_todos', '0004_auto_20160112_1310'),
+        ("fir_todos", "0004_auto_20160112_1310"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='todolisttemplate',
-            name='concerned_business_lines',
-            field=models.ManyToManyField(blank=True, to='incidents.BusinessLine'),
+            model_name="todolisttemplate",
+            name="concerned_business_lines",
+            field=models.ManyToManyField(blank=True, to="incidents.BusinessLine"),
         ),
         migrations.AlterField(
-            model_name='todolisttemplate',
-            name='todolist',
-            field=models.ManyToManyField(blank=True, to='fir_todos.TodoItem'),
+            model_name="todolisttemplate",
+            name="todolist",
+            field=models.ManyToManyField(blank=True, to="fir_todos.TodoItem"),
         ),
     ]

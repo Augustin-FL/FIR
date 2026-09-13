@@ -404,6 +404,12 @@ class Incident(FIRModel, models.Model):
             ("view_incidents", "Can view incidents"),
             ("view_statistics", "Can view statistics"),
         )
+        indexes = [
+            models.Index(
+                fields=["-date"],
+                name="incident_date_idx",
+            ),
+        ]
 
 
 class Comments(models.Model):
@@ -420,6 +426,12 @@ class Comments(models.Model):
 
     class Meta:
         verbose_name_plural = "comments"
+        indexes = [
+            models.Index(
+                fields=["incident", "opened_by"],
+                name="comments_in_opened_idx",
+            ),
+        ]
 
     def __str__(self):
         return "Comment for incident %s" % self.incident.id

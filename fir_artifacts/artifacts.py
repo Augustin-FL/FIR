@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 from django import template
 from django.template.loader import get_template
 from django.template import RequestContext
+from django.db.models import Count
 
 register = template.Library()
 
@@ -89,18 +90,42 @@ class AbstractArtifact:
         pass
 
     def __init__(self, artifacts, event, user=None):
-        class ArtifactDisplay(object):
-            def __init__(self, artifact, user):
-                from incidents.models import Incident
+        from incidents.models import Incident
+        from fir_artifacts.models import IncidentArtifact
 
+        artifacts = list(artifacts)
+        artifact_ids = [artifact.id for artifact in artifacts]
+
+        # Calculate all correlation counts in one query instead
+        # of executing one COUNT() query per artifact.
+        if user is not None:
+            allowed_incidents = Incident.authorization.for_user(
+                user, "incidents.view_incidents"
+            )
+
+            correlation_counts = dict(
+                IncidentArtifact.objects.filter(
+                    incident__in=allowed_incidents,
+                    artifact_id__in=artifact_ids,
+                )
+                .values("artifact_id")
+                .annotate(count=Count("incident_id"))
+                .values_list("artifact_id", "count")
+            )
+        else:
+            correlation_counts = dict(
+                IncidentArtifact.objects.filter(
+                    artifact_id__in=artifact_ids,
+                )
+                .values("artifact_id")
+                .annotate(count=Count("incident_id"))
+                .values_list("artifact_id", "count")
+            )
+
+        class ArtifactDisplay(object):
+            def __init__(self, artifact, correlation_count):
                 self.artifact = artifact
-                if user is not None:
-                    qs = Incident.authorization.for_user(
-                        user, "incidents.view_incidents"
-                    ).filter(artifact_set=artifact)
-                else:
-                    qs = artifact.incidents.all()
-                self.correlation_count = qs.count()
+                self.correlation_count = correlation_count
 
             @property
             def value(self):
@@ -118,13 +143,19 @@ class AbstractArtifact:
             def pk(self):
                 return self.artifact.pk
 
-        self._artifacts = [ArtifactDisplay(artifact, user) for artifact in artifacts]
+        self._artifacts = [
+            ArtifactDisplay(
+                artifact,
+                correlation_counts.get(artifact.id, 0),
+            )
+            for artifact in artifacts
+        ]
+
         self._event = event
 
-        self._correlated = []
-        for artifact in self._artifacts:
-            if artifact.correlation_count > 1:
-                self._correlated.append(artifact)
+        self._correlated = [
+            artifact for artifact in self._artifacts if artifact.correlation_count > 1
+        ]
 
     def json(self, request):
         return self.display(request, correlated=False, json=True)
@@ -132,7 +163,9 @@ class AbstractArtifact:
     def display(self, request, correlated=False, json=False):
         context = RequestContext(request)
         template = get_template(self.__class__.template)
+
         context["artifact_name"] = self.__class__.display_name
+
         if correlated:
             context["artifact_values"] = self._correlated
         else:

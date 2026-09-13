@@ -25,7 +25,13 @@ class IncidentArtifact(models.Model):
 
     class Meta:
         db_table = "incidents_incident_artifacts"
-        unique_together = ("incident", "artifact")
+        unique_together = ["incident", "artifact"]
+        indexes = [
+            models.Index(
+                fields=["artifact", "incident"],
+                name="ia_artifact_inc_idx",
+            ),
+        ]
 
 
 class Artifact(models.Model):
